@@ -8,7 +8,7 @@ end
 
 get '/api/tasks/:id' do |id|
   task = Task.find_by_id(id)
-  halt 404, { message:'Task Not Found'}.to_json unless task
+  halt 404, { message : 'Task Not Found' }.to_json unless task
   task.to_json
 end
 
@@ -30,7 +30,7 @@ put '/api/tasks/:id' do |id|
 end
 
 delete '/api/tasks/:id' do |id|
-  if not Task.exists?(id)
+  if ! Task.exists?(id)
     status 404
   else
     Task.destroy(id)
