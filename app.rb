@@ -7,23 +7,13 @@ get '/api/tasks' do
 end
 
 get '/api/tasks/:id' do |id|
-  # TODO: is there an active record method that doesn't raise an error and instead returns nil when not found?
-  begin
-    Task.find(id).to_json
-  rescue ActiveRecord::RecordNotFound
-    status 404
-  end
-
-  # if task.nil?
-  #   status 404
-  # else
-  #   task.to_json
-  # end
+  task = Task.find_by_id(id)
+  halt 404, { message:'Task Not Found'}.to_json unless task
+  task.to_json
 end
 
 post '/api/tasks' do
   task = Task.new(description: params[:description], priority: params[:priority])
-
   if task.valid?
     task.save
     status 201
@@ -40,10 +30,9 @@ put '/api/tasks/:id' do |id|
 end
 
 delete '/api/tasks/:id' do |id|
-  # TODO: better way without begin rescue?
-  begin
-    Task.destroy(id)
-  rescue ActiveRecord::RecordNotFound
+  if not Task.exists?(id)
     status 404
+  else
+    Task.destroy(id)
   end
 end
